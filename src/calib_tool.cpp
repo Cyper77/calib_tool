@@ -81,7 +81,11 @@ void calibrator::calc_image_points(bool show) {
 
 void calibrator::calibrate() {
     vector<Mat> rvecs, tvecs;
-    float rms_error = calibrateCamera(object_points, image_points, images[0].size(), cameraMatrix, distCoeffs, rvecs, tvecs);
+    cameraMatrix = initCameraMatrix2D(object_points, image_points, images[0].size(), 0);
+    distCoeffs = Mat::zeros(1, 5, CV_32F);
+    float rms_error = calibrateCamera(object_points, image_points, images[0].size(), cameraMatrix, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS | CV_CALIB_ZERO_TANGENT_DIST | CV_CALIB_FIX_ASPECT_RATIO);
+    // cout << "RMS reprojection error " << rms_error << endl;
+    rms_error = calibrateCamera(object_points, image_points, images[0].size(), cameraMatrix, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
     cout << "RMS reprojection error " << rms_error << endl;
 }
 
